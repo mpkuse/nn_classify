@@ -17,3 +17,5 @@ b2 = randn( 1, nClass );
 X = D( 10, : );
 y = L_nn( 10, :);
 [ u1, u2, u3, u4, u5, L ] = forward_pass( X, W1, b1, W2, b2, y );
+
+backward_pass( X, W1, b1, W2, b2, y,   u1, u2, u3, u4, u5, L );
