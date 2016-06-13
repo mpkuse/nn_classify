@@ -45,8 +45,8 @@ b2 = randn( 1, nClass );
 step = 0.004;
 lambda = .1;
 nItr = 100;
-sgd_pick = 180; 
-
+sgd_pick = 240; 
+display( 'Iterations Begin...' );
 for itr = 1:nItr
     
     a_dL_dW1 = zeros( dim, h );
@@ -85,8 +85,17 @@ for itr = 1:nItr
     
     % Eval accuracy of currect weights
     if mod(itr,15 ) == 0 %eval accuracy every 15 iterations
-        [acc confusion_mat out_stack] = eval_perf( D_test, L_nn_test, W1, b1, W2, b2 );
+        [acc ] = eval_perf( D_test, L_nn_test, W1, b1, W2, b2 );
         display( sprintf( '%d : %f (acc=%f)', itr, a_cost, acc ) );
     end
 
 end
+
+%Generate Summary
+display( '--------------\nSummary\n--------------' );
+%display( 'Test' );
+%eval_perf_detail( D_test, L_nn_test, W1, b1, W2, b2 );
+%display( 'Train' );
+%eval_perf_detail( D_train, L_nn_train, W1, b1, W2, b2 );
+display( 'Train+Test' );
+eval_perf_detail( D, L_nn, W1, b1, W2, b2 );
