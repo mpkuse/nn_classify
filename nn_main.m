@@ -34,7 +34,7 @@ D_test = cat( 1, D( te_p, : ), D( nD+te_p, : ), D( nD*2+te_p, : ) );
 L_nn_test = cat( 1, L_nn( te_p, :), L_nn( nD+te_p, :), L_nn( nD*2+te_p, :) );
 
 %% Init - Network
-h = 5; % # of hidden nodes
+h = 7; % # of hidden nodes
 W1 = randn( dim, h );
 b1 = randn( 1, h );
 W2 = randn( h, nClass );
@@ -46,6 +46,7 @@ step = 0.004;
 lambda = .1;
 nItr = 100;
 sgd_pick = 180; 
+
 for itr = 1:nItr
     
     a_dL_dW1 = zeros( dim, h );
@@ -83,8 +84,9 @@ for itr = 1:nItr
     
     
     % Eval accuracy of currect weights
-    % TODO eval accuracy of only the test set
-    acc = eval_perf( D_test, L_nn_test, W1, b1, W2, b2 );
-    display( sprintf( '%d : %f (acc=%f)', itr, a_cost, acc ) );
+    if mod(itr,15 ) == 0 %eval accuracy every 15 iterations
+        [acc confusion_mat out_stack] = eval_perf( D_test, L_nn_test, W1, b1, W2, b2 );
+        display( sprintf( '%d : %f (acc=%f)', itr, a_cost, acc ) );
+    end
 
 end
