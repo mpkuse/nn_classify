@@ -23,7 +23,7 @@ for k=1:nClass
     label_nn = zeros( 1, nClass );
     label_nn(k) = 1;
 
-    plot( x1,x2, colors(k,:) );
+    plot( x1,x2, colors(k,:) ), title('raw data');
     axis( [-1, 1, -1, 1] );
     hold on
     
@@ -32,4 +32,4 @@ for k=1:nClass
     Label_nn = cat( 1, Label_nn, repmat( label_nn, nDataPts, 1 ) );
 end
 
-clear colors k label noise r t x1 x2;
+clear colors k noise r t x1 x2;

@@ -7,9 +7,9 @@ if false
     nClass = 3;
     dataPerClass = 100;
     dim = 2;
-    [D L L_nn] = spiral_data( 100, 3 ); % 100 points of each category. 3 categories in all
+    [D Loss L_nn] = spiral_data( dataPerClass, nClass ); % 100 points of each category. 3 categories in all
     nTotalD = nClass*dataPerClass;
-    %save( 'data.mat', 'nClass', 'dataPerClass', 'dim', 'D', 'L', 'L_nn', 'nTotalD' )
+    save( 'data.mat', 'nClass', 'dataPerClass', 'dim', 'D', 'L', 'L_nn', 'nTotalD' )
 else
     display( 'Load Data' );
     load( 'data.mat' );
@@ -34,7 +34,7 @@ D_test = cat( 1, D( te_p, : ), D( nD+te_p, : ), D( nD*2+te_p, : ) );
 L_nn_test = cat( 1, L_nn( te_p, :), L_nn( nD+te_p, :), L_nn( nD*2+te_p, :) );
 
 %% Init - Network
-h = 7; % # of hidden nodes
+h = 2; % # of hidden nodes
 W1 = randn( dim, h );
 b1 = randn( 1, h );
 W2 = randn( h, nClass );
@@ -66,14 +66,14 @@ for itr = 1:nItr
         X = D_sgd( e, : );
         y = L_nn_sgd( e, :);
         
-        [ u1, u2, u3, u4, u5, L ] = forward_pass( X, W1, b1, W2, b2, y );        
-        [ dL_dW1, dL_db1, dL_dW2, dL_db2 ] = backward_pass( X, W1, b1, W2, b2, y,   u1, u2, u3, u4, u5, L );
+        [ u1, u2, u3, u4, u5, Loss ] = forward_pass( X, W1, b1, W2, b2, y );        
+        [ dL_dW1, dL_db1, dL_dW2, dL_db2 ] = backward_pass( X, W1, b1, W2, b2, y,   u1, u2, u3, u4, u5, Loss );
         
         a_dL_dW1 = a_dL_dW1 + dL_dW1;
         a_dL_db1 = a_dL_db1 + dL_db1;
         a_dL_dW2 = a_dL_dW2 + dL_dW2;
         a_dL_db2 = a_dL_db2 + dL_db2;
-        a_cost = a_cost + L;
+        a_cost = a_cost + Loss;
     end
     
     % gradient descent (update params)
@@ -91,7 +91,7 @@ for itr = 1:nItr
 
 end
 
-%Generate Summary
+%% Generate Summary
 display( '--------------\nSummary\n--------------' );
 %display( 'Test' );
 %eval_perf_detail( D_test, L_nn_test, W1, b1, W2, b2 );
@@ -99,3 +99,13 @@ display( '--------------\nSummary\n--------------' );
 %eval_perf_detail( D_train, L_nn_train, W1, b1, W2, b2 );
 display( 'Train+Test' );
 eval_perf_detail( D, L_nn, W1, b1, W2, b2 );
+
+%% Understand these mappings by hidden layer
+H1 = max( 0, D*W1 + repmat( b1, size(D,1), 1 ) ); %output of 1st hidden layer
+class_1 = L==1;
+class_2 = L==2;
+class_3 = L==3;
+plot( H1(class_1,1), H1(class_1,2), 'r.' ), title( 'output of 1st hidden layer' );
+hold on
+plot( H1(class_2,1), H1(class_2,2), 'g.' );
+plot( H1(class_3,1), H1(class_3,2), 'b.' );
